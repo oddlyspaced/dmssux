@@ -10,6 +10,7 @@ if (len(sys.argv) == 1):
 image_src = str(sys.argv[1])
 # image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
 white_threshold = 200
+count = 1
 
 def conver_to_grayscale(file):
     img_buffer = Image.open(file).convert('LA')
@@ -182,17 +183,17 @@ def separate_chars(file):
     img_buffer = Image.open(file)
     width, height = img_buffer.size
     x = 0
-    start = 0
+    global count
     while True:
         if (x == width):
             cropped = img_buffer.crop((0, 0, x, height))
-            cropped.save(str(start) + '.png')
+            cropped.save(str(count) + '.png')
             break
 
         if (is_line_empty(img_buffer, x) == True):
             cropped = img_buffer.crop((0, 0, x, height))
-            cropped.save(str(start) + '.png')
-            start = start + 1
+            cropped.save(str(count) + '.png')
+            count = count + 1
             img_buffer = strip_image_image(img_buffer.crop((x, 0, width, height)))
             width, height = img_buffer.size
             x = 0
@@ -209,3 +210,4 @@ improve_color_sheared('temp.png')
 strip_image('temp.png', 'temp.png')
 separate_chars('temp.png')
 os.remove('temp.png')
+print(count)
