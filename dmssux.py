@@ -93,8 +93,21 @@ def shear_image(file):
     img = img.transform((width, height), Image.AFFINE, (1, m, -xshift if m > 0 else 0, 0, 1, 0), Image.BICUBIC)
     img.save('sheared.png')
 
+def improve_color_sheared(file):
+    img_buffer = Image.open(file)
+    width, height = img_buffer.size
+    for x in range(0, width):
+        for y in range(0, height):
+            darkness = img_buffer.getpixel((x, y))[1]
+            if (darkness > 160) :
+                img_buffer.putpixel((x, y), (0, 255))
+            else :
+                img_buffer.putpixel((x, y), (0, 0))
+    img_buffer.save('sheared_enhanced.png')
+
 conver_to_grayscale(image_src)
 remove_border('greyscale.png')
 improve_color('greyscale_cropped.png')
 strip_image('grayscale_enhanced.png')
 shear_image('greyscale_enhanced_cropped.png')
+improve_color_sheared('sheared.png')
