@@ -26,6 +26,65 @@ def improve_color(file):
                 img_buffer.putpixel((x, y), (0, 0))
     img_buffer.save('grayscale_enhanced.png')
 
+def strip_image(file):
+    img_buffer = Image.open(file)
+    width, height = img_buffer.size
+    left = 0
+    top = 0
+    right = 0
+    bottom = 0
+    # left
+    for x in range(0, width):
+        for y in range(0, height):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                left = x
+                break
+        if (hit == True):
+            break
+
+    # right
+    for x in range(width - 1, 0, -1):
+        for y in range(0, height):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                right = x + 1
+                break
+        if (hit == True):
+            break
+
+    # top
+    for y in range(0, height):
+        for x in range(0, width):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                top = y
+                break
+        if (hit == True):
+            break
+    
+    # bottom
+    for y in range(height - 1, 0, -1):
+        for x in range(0, width):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                bottom = y + 1
+                break
+        if (hit == True):
+            break
+    # print(left, top, right, bottom)
+    cropped = img_buffer.crop((left, top, right, bottom))
+    cropped.save('greyscale_ehanced_cropped.png')
+
 conver_to_grayscale(image_src)
 remove_border('greyscale.png')
 improve_color('greyscale_cropped.png')
+strip_image('grayscale_enhanced.png')
