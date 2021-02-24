@@ -1,6 +1,4 @@
 from PIL import Image
-from skimage import io
-from skimage import transform as tf
 
 image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
 white_threshold = 200
@@ -87,10 +85,13 @@ def strip_image(file):
     cropped.save('greyscale_enhanced_cropped.png')
 
 def shear_image(file):
-    image = io.imread(file)
-    afine_tf = tf.AffineTransform(shear=0.35)
-    modified = tf.warp(image, inverse_map=afine_tf)
-    io.imsave('sheared.png', modified)
+    img = Image.open(file)
+    width, height = img.size
+    m = -0.35
+    xshift = abs(m) * width
+    # new_width = width + int(round(xshift))
+    img = img.transform((width, height), Image.AFFINE, (1, m, -xshift if m > 0 else 0, 0, 1, 0), Image.BICUBIC)
+    img.save('sheared.png')
 
 conver_to_grayscale(image_src)
 remove_border('greyscale.png')
