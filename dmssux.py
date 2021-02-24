@@ -23,7 +23,7 @@ def improve_color(file):
             if (darkness < white_threshold) :
                 img_buffer.putpixel((x, y), (0, 255))
             else :
-                img_buffer.putpixel((x, y), (255, 255))
+                img_buffer.putpixel((x, y), (0, 0))
     img_buffer.save('grayscale_enhanced.png')
 
 conver_to_grayscale(image_src)
