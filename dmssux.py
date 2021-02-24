@@ -26,7 +26,7 @@ def improve_color(file):
                 img_buffer.putpixel((x, y), (0, 0))
     img_buffer.save('grayscale_enhanced.png')
 
-def strip_image(file):
+def strip_image(file, savefilename):
     img_buffer = Image.open(file)
     width, height = img_buffer.size
     left = 0
@@ -82,7 +82,7 @@ def strip_image(file):
             break
     # print(left, top, right, bottom)
     cropped = img_buffer.crop((left, top, right, bottom))
-    cropped.save('greyscale_enhanced_cropped.png')
+    cropped.save(savefilename)
 
 def shear_image(file):
     img = Image.open(file)
@@ -108,6 +108,7 @@ def improve_color_sheared(file):
 conver_to_grayscale(image_src)
 remove_border('greyscale.png')
 improve_color('greyscale_cropped.png')
-strip_image('grayscale_enhanced.png')
+strip_image('grayscale_enhanced.png', 'greyscale_enhanced_cropped.png')
 shear_image('greyscale_enhanced_cropped.png')
 improve_color_sheared('sheared.png')
+strip_image('sheared_enhanced.png', 'greyscale_enhanced_cropped.png')
