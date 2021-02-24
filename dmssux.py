@@ -84,6 +84,63 @@ def strip_image(file, savefilename):
     cropped = img_buffer.crop((left, top, right, bottom))
     cropped.save(savefilename)
 
+def strip_image_image(img_buffer):
+    width, height = img_buffer.size
+    left = 0
+    top = 0
+    right = 0
+    bottom = 0
+    # left
+    for x in range(0, width):
+        for y in range(0, height):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                left = x
+                break
+        if (hit == True):
+            break
+
+    # right
+    for x in range(width - 1, 0, -1):
+        for y in range(0, height):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                right = x + 1
+                break
+        if (hit == True):
+            break
+
+    # top
+    for y in range(0, height):
+        for x in range(0, width):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                top = y
+                break
+        if (hit == True):
+            break
+    
+    # bottom
+    for y in range(height - 1, 0, -1):
+        for x in range(0, width):
+            hit = False
+            pixel = img_buffer.getpixel((x, y))
+            if (pixel[1] == 255):
+                hit = True
+                bottom = y + 1
+                break
+        if (hit == True):
+            break
+    # print(left, top, right, bottom)
+    cropped = img_buffer.crop((left, top, right, bottom))
+    return cropped
+
 def shear_image(file):
     img = Image.open(file)
     width, height = img.size
@@ -105,6 +162,36 @@ def improve_color_sheared(file):
                 img_buffer.putpixel((x, y), (0, 0))
     img_buffer.save('sheared_enhanced.png')
 
+def is_line_empty(img, x):
+    h = img.size[1]
+    for y in range(0, h):
+        px = img.getpixel((x, y))[1]
+        if (px == 255):
+            return False
+    return True
+
+def separate_chars(file):
+    img_buffer = Image.open(file)
+    width, height = img_buffer.size
+    x = 0
+    start = 0
+    while True:
+        if (x == width):
+            cropped = img_buffer.crop((0, 0, x, height))
+            cropped.save(str(start) + '.png')
+            break
+
+        if (is_line_empty(img_buffer, x) == True):
+            cropped = img_buffer.crop((0, 0, x, height))
+            cropped.save(str(start) + '.png')
+            start = start + 1
+            img_buffer = strip_image_image(img_buffer.crop((x, 0, width, height)))
+            width, height = img_buffer.size
+            x = 0
+        else:
+            x = x + 1
+    
+
 conver_to_grayscale(image_src)
 remove_border('greyscale.png')
 improve_color('greyscale_cropped.png')
@@ -112,3 +199,4 @@ strip_image('grayscale_enhanced.png', 'greyscale_enhanced_cropped.png')
 shear_image('greyscale_enhanced_cropped.png')
 improve_color_sheared('sheared.png')
 strip_image('sheared_enhanced.png', 'greyscale_enhanced_cropped.png')
+separate_chars('greyscale_enhanced_cropped.png')
