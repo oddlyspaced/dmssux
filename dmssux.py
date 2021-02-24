@@ -1,18 +1,19 @@
 from PIL import Image
+import os
 
 image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
 white_threshold = 200
 
 def conver_to_grayscale(file):
     img_buffer = Image.open(file).convert('LA')
-    img_buffer.save('greyscale.png')
+    img_buffer.save('temp.png')
 
 # source image is 100x30
 # we trim out 3 px worth border from all sides
 def remove_border(file):
     img_buffer = Image.open(file)
     cropped = img_buffer.crop((3, 3, 97, 27))
-    cropped.save('greyscale_cropped.png')
+    cropped.save('temp.png')
 
 def improve_color(file):
     img_buffer = Image.open(file)
@@ -24,7 +25,7 @@ def improve_color(file):
                 img_buffer.putpixel((x, y), (0, 255))
             else :
                 img_buffer.putpixel((x, y), (0, 0))
-    img_buffer.save('grayscale_enhanced.png')
+    img_buffer.save('temp.png')
 
 def strip_image(file, savefilename):
     img_buffer = Image.open(file)
@@ -148,7 +149,7 @@ def shear_image(file):
     xshift = abs(m) * width
     # new_width = width + int(round(xshift))
     img = img.transform((width, height), Image.AFFINE, (1, m, -xshift if m > 0 else 0, 0, 1, 0), Image.BICUBIC)
-    img.save('sheared.png')
+    img.save('temp.png')
 
 def improve_color_sheared(file):
     img_buffer = Image.open(file)
@@ -160,7 +161,7 @@ def improve_color_sheared(file):
                 img_buffer.putpixel((x, y), (0, 255))
             else :
                 img_buffer.putpixel((x, y), (0, 0))
-    img_buffer.save('sheared_enhanced.png')
+    img_buffer.save('temp.png')
 
 def is_line_empty(img, x):
     h = img.size[1]
@@ -193,10 +194,11 @@ def separate_chars(file):
     
 
 conver_to_grayscale(image_src)
-remove_border('greyscale.png')
-improve_color('greyscale_cropped.png')
-strip_image('grayscale_enhanced.png', 'greyscale_enhanced_cropped.png')
-shear_image('greyscale_enhanced_cropped.png')
-improve_color_sheared('sheared.png')
-strip_image('sheared_enhanced.png', 'greyscale_enhanced_cropped.png')
-separate_chars('greyscale_enhanced_cropped.png')
+remove_border('temp.png')
+improve_color('temp.png')
+strip_image('temp.png', 'temp.png')
+shear_image('temp.png')
+improve_color_sheared('temp.png')
+strip_image('temp.png', 'temp.png')
+separate_chars('temp.png')
+os.remove('temp.png')
