@@ -1,7 +1,14 @@
 from PIL import Image
 import os
+import sys
 
-image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
+print(sys.argv)
+if (len(sys.argv) == 1):
+    print("Enter file name!")
+    quit(0)
+
+image_src = str(sys.argv[1])
+# image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
 white_threshold = 200
 
 def conver_to_grayscale(file):
