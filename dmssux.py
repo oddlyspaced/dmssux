@@ -10,6 +10,7 @@ if (len(sys.argv) == 1):
 image_src = str(sys.argv[1])
 # image_src = '/home/hardik/Projects/Python-Stuff/dmssux/original/12.png'
 white_threshold = 200
+transparency_threshold = 160
 count = 1
 
 def conver_to_grayscale(file):
@@ -165,7 +166,7 @@ def improve_color_sheared(file):
     for x in range(0, width):
         for y in range(0, height):
             darkness = img_buffer.getpixel((x, y))[1]
-            if (darkness > 160) :
+            if (darkness > transparency_threshold) :
                 img_buffer.putpixel((x, y), (0, 255))
             else :
                 img_buffer.putpixel((x, y), (0, 0))
@@ -201,13 +202,17 @@ def separate_chars(file):
             x = x + 1
     
 
-conver_to_grayscale(image_src)
-remove_border('temp.png')
-improve_color('temp.png')
-strip_image('temp.png', 'temp.png')
-shear_image('temp.png')
-improve_color_sheared('temp.png')
-strip_image('temp.png', 'temp.png')
-separate_chars('temp.png')
+while (count != 6):
+    print(count)
+    count = 1
+    conver_to_grayscale(image_src)
+    remove_border('temp.png')
+    improve_color('temp.png')
+    strip_image('temp.png', 'temp.png')
+    shear_image('temp.png')
+    improve_color_sheared('temp.png')
+    strip_image('temp.png', 'temp.png')
+    separate_chars('temp.png')
+    white_threshold = white_threshold - 2
+    transparency_threshold = transparency_threshold - 1
 os.remove('temp.png')
-print(count)
